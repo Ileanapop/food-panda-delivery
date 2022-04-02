@@ -25,6 +25,7 @@ public class AdministratorLoginController {
     @ResponseStatus(HttpStatus.OK)
     public AdministratorDTO saveUser(@RequestBody AdministratorDTO administratorDTO){
         System.out.println("*********************");
+        System.out.println(administratorDTO.getPassword());
         return administratorService.addAdministrator(administratorDTO);
     }
 

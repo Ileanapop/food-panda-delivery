@@ -8,8 +8,8 @@ public class AdministratorMapper {
     public Administrator convertFromDTO(AdministratorDTO administratorDTO){
         Administrator administrator = new Administrator();
 
-        administrator.setUsername(administrator.getUsername());
-        administrator.setPassword(administrator.getPassword());
+        administrator.setUsername(administratorDTO.getUsername());
+        administrator.setPassword(administratorDTO.getPassword());
         return administrator;
     }
 

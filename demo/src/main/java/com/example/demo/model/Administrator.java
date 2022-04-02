@@ -14,7 +14,9 @@ import javax.persistence.*;
 public class Administrator {
 
     @Id
-    private String id;
+    @GeneratedValue(strategy= GenerationType.IDENTITY)
+    @Column(name = "id_customer", updatable = false, nullable = false)
+    private Integer id;
 
     @Column(name = "username")
     private String username;
