@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@RequestMapping("api/administrator/login")
 public class AdministratorLoginController {
 
     @Autowired
@@ -24,8 +25,6 @@ public class AdministratorLoginController {
     @PostMapping(value = "/create")
     @ResponseStatus(HttpStatus.OK)
     public AdministratorDTO saveUser(@RequestBody AdministratorDTO administratorDTO){
-        System.out.println("*********************");
-        System.out.println(administratorDTO.getPassword());
         return administratorService.addAdministrator(administratorDTO);
     }
 
