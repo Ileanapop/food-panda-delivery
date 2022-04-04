@@ -11,6 +11,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.Optional;
 
 @Service
 public class CustomerService {
@@ -30,6 +31,16 @@ public class CustomerService {
     public CustomerDTO addCustomer(CustomerWrapperDTO customerWrapperDTO){
         CustomerMapper customerMapper = new CustomerMapper();
         Customer newCustomer = customerMapper.convertFromDTO(customerWrapperDTO);
+
+        Optional<Customer> existingCustomer = customerRepository.findByUsername(newCustomer.getUsername());
+        if(existingCustomer.isPresent())
+            return null;
+
+        Optional<Customer> existingCustomerWithEmailAddress = customerRepository.findByEmail(newCustomer.getEmail());
+        if(existingCustomerWithEmailAddress.isPresent()){
+            return null;
+        }
+
         newCustomer.setPassword(new BCryptPasswordEncoder().encode(newCustomer.getPassword()));
         return customerMapper.convertToDTO(customerRepository.save(newCustomer));
     }

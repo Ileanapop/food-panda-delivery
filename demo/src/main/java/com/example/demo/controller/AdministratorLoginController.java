@@ -4,7 +4,11 @@ import com.example.demo.dto.AdministratorDTO;
 import com.example.demo.service.AdministratorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.HttpClientErrorException;
+
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping("api/administrator/login")
@@ -23,9 +27,11 @@ public class AdministratorLoginController {
     }
 
     @PostMapping(value = "/create")
-    @ResponseStatus(HttpStatus.OK)
-    public AdministratorDTO saveUser(@RequestBody AdministratorDTO administratorDTO){
-        return administratorService.addAdministrator(administratorDTO);
+    public ResponseEntity<?> saveUser(@Valid @RequestBody AdministratorDTO administratorDTO){
+        AdministratorDTO newAdministrator = administratorService.addAdministrator(administratorDTO);
+        if(newAdministrator==null)
+            return ResponseEntity.badRequest().body("Insert cannot be performed");
+        return new ResponseEntity<>(newAdministrator,HttpStatus.OK);
     }
 
     @RequestMapping("/")

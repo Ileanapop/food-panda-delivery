@@ -9,6 +9,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import javax.transaction.Transactional;
+import java.util.Optional;
 
 @Component
 public class AdministratorService {
@@ -22,8 +23,12 @@ public class AdministratorService {
     @Transactional
     public AdministratorDTO addAdministrator(AdministratorDTO administratorDTO){
         AdministratorMapper administratorMapper = new AdministratorMapper();
-        System.out.println(administratorDTO.getPassword());
         Administrator newAdministrator = administratorMapper.convertFromDTO(administratorDTO);
+
+        Optional<Administrator> administrator = administratorRepository.findByUsername(newAdministrator.getUsername());
+        if(administrator.isPresent())
+            return null;
+
         newAdministrator.setPassword(new BCryptPasswordEncoder().encode(newAdministrator.getPassword()));
         return administratorMapper.convertToDTO(administratorRepository.save(newAdministrator));
     }
