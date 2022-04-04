@@ -13,7 +13,7 @@ public class AdministratorLoginController {
     @Autowired
     private AdministratorService administratorService;
 
-    @GetMapping("/login/{username}")
+    @GetMapping("/{username}")
     @ResponseStatus(HttpStatus.OK)
     public AdministratorDTO getCustomerByUsername(@PathVariable String username){
 
