@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.validation.constraints.Positive;
+
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -19,7 +21,8 @@ public class MenuItemDTO {
 
     private String description;
 
-    private String price;
+    @Positive
+    private Double price;
 
     private String category;
 

@@ -2,13 +2,16 @@ package com.example.demo.controller;
 
 
 import com.example.demo.dto.*;
+import com.example.demo.repository.OrdersRepository;
 import com.example.demo.service.MenuItemService;
+import com.example.demo.service.OrdersService;
 import com.example.demo.service.RestaurantService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,6 +25,10 @@ public class RestaurantController {
     @Autowired
     private MenuItemService menuItemService;
 
+    @Autowired
+    private OrdersService ordersService;
+
+
     @PostMapping("/addRestaurant")
     @ResponseStatus(HttpStatus.OK)
     public RestaurantDTO addRestaurant(@RequestBody RestaurantDTO restaurantDTO) {
@@ -30,7 +37,7 @@ public class RestaurantController {
 
     @PostMapping("/addFoods")
     @ResponseStatus(HttpStatus.OK)
-    public MenuItemDTO addFood(@RequestBody MenuItemDTO menuItemDTO) {
+    public MenuItemDTO addFood(@Valid @RequestBody MenuItemDTO menuItemDTO) {
 
         return menuItemService.addMenuItem(menuItemDTO);
     }
@@ -63,6 +70,27 @@ public class RestaurantController {
 
         return restaurantService.getAllRestaurants();
 
+    }
+
+    @GetMapping("/viewRestaurantOrders")
+    @ResponseStatus(HttpStatus.OK)
+    public List<ViewOrderDTO> getRestaurantOrders(@Param("name") String name){
+
+        return ordersService.getRestaurantOrders(name);
+    }
+
+    @GetMapping("/viewRestaurantPendingOrders")
+    @ResponseStatus(HttpStatus.OK)
+    public List<ViewOrderDTO> getRestaurantPendingOrders(@Param("name") String name){
+
+        return ordersService.getRestaurantPendingOrders(name);
+    }
+
+    @PutMapping("/acceptOrders")
+    @ResponseStatus(HttpStatus.OK)
+    public boolean acceptOrders(@RequestBody AcceptedOrdersDTO acceptedOrdersDTO){
+
+        return ordersService.acceptOrders(acceptedOrdersDTO);
     }
 
 }

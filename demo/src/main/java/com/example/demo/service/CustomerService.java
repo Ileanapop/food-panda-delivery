@@ -40,7 +40,7 @@ public class CustomerService {
     }
 
     public CustomerDTO loginCustomer(String username, String password){
-        Optional<Customer> customer = customerRepository.findByUsername(username);
+        Optional<Customer> customer = customerRepository.findFirstByUsername(username);
         if(!customer.isPresent()){
             return null;
         }
@@ -57,11 +57,11 @@ public class CustomerService {
         CustomerMapper customerMapper = new CustomerMapper();
         Customer newCustomer = customerMapper.convertFromDTO(customerWrapperDTO);
 
-        Optional<Customer> existingCustomer = customerRepository.findByUsername(newCustomer.getUsername());
+        Optional<Customer> existingCustomer = customerRepository.findFirstByUsername(newCustomer.getUsername());
         if(existingCustomer.isPresent())
             return null;
 
-        Optional<Customer> existingCustomerWithEmailAddress = customerRepository.findByEmail(newCustomer.getEmail());
+        Optional<Customer> existingCustomerWithEmailAddress = customerRepository.findFirstByEmail(newCustomer.getEmail());
         if(existingCustomerWithEmailAddress.isPresent()){
             return null;
         }
@@ -76,7 +76,7 @@ public class CustomerService {
         System.out.println(orderDTO.getRestaurant());
         System.out.println(orderDTO.getCustomer());
         if(restaurant.isPresent()){
-            Optional<Customer> customer = customerRepository.findByEmail(orderDTO.getCustomer());
+            Optional<Customer> customer = customerRepository.findFirstByEmail(orderDTO.getCustomer());
             if(customer.isPresent()){
                 Optional<OrderStatus> orderStatus = orderStatusRepository.findByName("PENDING");
                 if(orderStatus.isPresent()){

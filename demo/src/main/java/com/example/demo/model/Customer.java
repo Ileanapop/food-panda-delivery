@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Getter
 @Setter
@@ -34,8 +35,8 @@ public class Customer {
     @Column(name = "email", unique = true, nullable = false, length = 100)
     private String email;
 
-    @OneToOne(mappedBy = "customer")
-    private Order order;
+    @OneToMany(mappedBy = "customer")
+    private List<Order> orders;
 
     public Customer(String username, String password, String firstName, String lastName, String email){
         this.username = username;

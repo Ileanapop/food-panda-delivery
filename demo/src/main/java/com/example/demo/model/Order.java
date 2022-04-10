@@ -26,7 +26,7 @@ public class Order {
     @JoinColumn(name = "id_status")
     private OrderStatus orderStatus;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name="customer_id")
     private Customer customer;
 
