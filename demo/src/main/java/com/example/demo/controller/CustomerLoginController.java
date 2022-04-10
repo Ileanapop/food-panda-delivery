@@ -43,5 +43,4 @@ public class CustomerLoginController {
         return new ResponseEntity<>(result,HttpStatus.OK);
     }
 
-
 }

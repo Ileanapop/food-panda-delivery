@@ -93,4 +93,18 @@ public class RestaurantController {
         return ordersService.acceptOrders(acceptedOrdersDTO);
     }
 
+    @GetMapping("/filterOrder")
+    @ResponseStatus(HttpStatus.OK)
+    public List<ViewOrderDTO> filterOrdersByStatus(@Param("orderStatus") String orderStatus, @Param("administrator") String administrator){
+
+        System.out.println("Filteeeeeeeeeeeeeee");
+        return ordersService.filterOrdersByStatus(orderStatus, administrator);
+    }
+
+    @GetMapping("/viewCustomerOrders")
+    @ResponseStatus(HttpStatus.OK)
+    public List<ViewOrderDTO> getCustomerOrders(@Param("email") String email){
+
+        return ordersService.getCustomerOrders(email);
+    }
 }

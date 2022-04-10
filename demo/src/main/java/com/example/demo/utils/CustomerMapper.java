@@ -8,23 +8,27 @@ import com.example.demo.model.Customer;
 public class CustomerMapper {
 
     public Customer convertFromDTO(CustomerWrapperDTO customerWrapperDTO){
-        Customer customer = new Customer();
 
-        customer.setEmail(customerWrapperDTO.getCustomerDTO().getEmail());
-        customer.setFirstName(customerWrapperDTO.getCustomerDTO().getFirstName());
-        customer.setLastName(customerWrapperDTO.getCustomerDTO().getLastName());
-        customer.setUsername(customerWrapperDTO.getLoginDTO().getUsername());
-        customer.setPassword(customerWrapperDTO.getLoginDTO().getPassword());
-        return customer;
+        return Customer.builder()
+        .email(customerWrapperDTO.getCustomerDTO().getEmail())
+        .firstName(customerWrapperDTO.getCustomerDTO().getFirstName())
+        .lastName(customerWrapperDTO.getCustomerDTO().getLastName())
+        .username(customerWrapperDTO.getLoginDTO().getUsername())
+        .password(customerWrapperDTO.getLoginDTO().getPassword()).build();
     }
 
     public CustomerDTO convertToDTO(Customer customer){
 
-        CustomerDTO customerDTO = new CustomerDTO();
+        return CustomerDTO.builder()
+                .email(customer.getEmail())
+                .firstName(customer.getFirstName())
+                .lastName(customer.getLastName()).build();
+
+        /*CustomerDTO customerDTO = new CustomerDTO();
         customerDTO.setEmail(customer.getEmail());
         customerDTO.setFirstName(customer.getFirstName());
         customerDTO.setLastName((customer.getLastName()));
-        return customerDTO;
+        return customerDTO;*/
     }
 
     public LoginDTO convertLoginToDTO(Customer customer){
