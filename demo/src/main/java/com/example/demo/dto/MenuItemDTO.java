@@ -19,7 +19,10 @@ public class MenuItemDTO {
 
     private String description;
 
-    private double price;
+    private String price;
 
-    private FoodCategory category;
+    private String category;
+
+    private String administrator;
+
 }

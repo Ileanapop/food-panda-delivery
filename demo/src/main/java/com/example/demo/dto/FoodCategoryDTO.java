@@ -1,30 +1,23 @@
 package com.example.demo.dto;
 
-import com.example.demo.model.Administrator;
-import com.example.demo.model.DeliveryZone;
+
 import com.example.demo.model.MenuItem;
-import com.example.demo.model.Order;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-
+import javax.persistence.*;
 import java.util.List;
 
-@Setter
 @Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
-
-public class RestaurantDTO {
+public class FoodCategoryDTO {
 
     private String name;
 
-    private String location;
-
-    private AdministratorDTO administrator;
-
-    private List<String> deliveryZones;
+    private List<MenuItemDTO> menuItems;
 
 }

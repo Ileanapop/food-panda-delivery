@@ -31,9 +31,13 @@ public class MenuItem {
     @JoinColumn(name = "id_category")
     private FoodCategory category;
 
-    @ManyToMany(mappedBy = "menuItems")
-    private List<Restaurant> restaurants;
+    //@ManyToMany(mappedBy = "menuItems")
+    //private List<Restaurant> restaurants;
 
     @ManyToMany(mappedBy = "orderMenuItems")
     private List<Order> orders;
+
+    @ManyToOne
+    @JoinColumn(name = "id_restaurant")
+    private Restaurant restaurant;
 }

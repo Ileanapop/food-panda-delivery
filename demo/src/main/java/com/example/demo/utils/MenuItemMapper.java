@@ -12,9 +12,9 @@ public class MenuItemMapper {
        MenuItem menuItem = new MenuItem();
 
        menuItem.setItemName(menuItemDTO.getItemName());
-       menuItem.setCategory(menuItemDTO.getCategory());
+       //menuItem.setCategory(menuItemDTO.getCategory());
        menuItem.setDescription(menuItemDTO.getDescription());
-       menuItem.setPrice(menuItemDTO.getPrice());
+       menuItem.setPrice(Double.parseDouble(menuItemDTO.getPrice()));
        return menuItem;
 
     }
@@ -24,9 +24,9 @@ public class MenuItemMapper {
         MenuItemDTO menuItemDTO = new MenuItemDTO();
 
         menuItemDTO.setItemName(menuItem.getItemName());
-        menuItemDTO.setCategory(menuItem.getCategory());
+        //menuItemDTO.setCategory(menuItem.getCategory());
         menuItemDTO.setDescription(menuItem.getDescription());
-        menuItemDTO.setPrice(menuItem.getPrice());
+        menuItemDTO.setPrice(String.valueOf(menuItem.getPrice()));
         return menuItemDTO;
 
     }

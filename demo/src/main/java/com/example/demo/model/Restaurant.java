@@ -28,11 +28,11 @@ public class Restaurant {
     @JoinColumn(name = "administrator_id")
     private Administrator administrator;
 
-    @ManyToMany(cascade = CascadeType.ALL)
-    @JoinTable(name = "restaurant_menuitem",
-            joinColumns = @JoinColumn(name = "id_restaurant"),
-            inverseJoinColumns = @JoinColumn(name = "id_item"))
-    private List<MenuItem> menuItems;
+    //@ManyToMany(cascade = CascadeType.ALL)
+   // @JoinTable(name = "restaurant_menuitem",
+     //       joinColumns = @JoinColumn(name = "id_restaurant"),
+     //       inverseJoinColumns = @JoinColumn(name = "id_item"))
+   // private List<MenuItem> menuItems;
 
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "restaurant_zones",
@@ -43,5 +43,7 @@ public class Restaurant {
     @OneToMany(mappedBy = "restaurant")
     private List<Order> orders;
 
+    @OneToMany(mappedBy = "restaurant")
+    private List<MenuItem> menuItems;
 
 }

@@ -20,6 +20,22 @@ public class AdministratorService {
     public AdministratorService(){
     }
 
+    public AdministratorDTO loginAdministrator(String username, String password){
+
+        Optional<Administrator> administrator = administratorRepository.findByUsername(username);
+
+        if(!administrator.isPresent()){
+            return null;
+        }
+
+        BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+        if(bCryptPasswordEncoder.matches(password,administrator.get().getPassword())){
+            AdministratorMapper administratorMapper = new AdministratorMapper();
+            return administratorMapper.convertToDTO(administrator.get());
+        }
+        return null;
+    }
+
     @Transactional
     public AdministratorDTO addAdministrator(AdministratorDTO administratorDTO){
         AdministratorMapper administratorMapper = new AdministratorMapper();

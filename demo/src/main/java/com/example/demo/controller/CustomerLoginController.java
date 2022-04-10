@@ -1,30 +1,23 @@
 package com.example.demo.controller;
 
-import com.example.demo.dto.CustomerDTO;
-import com.example.demo.dto.CustomerWrapperDTO;
-import com.example.demo.dto.LoginDTO;
+import com.example.demo.dto.*;
 import com.example.demo.service.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
-@RequestMapping("api/customer/login")
+@RequestMapping("/customer")
 public class CustomerLoginController {
 
     @Autowired
     private CustomerService customerService;
-
-    @GetMapping("/{username}")
-    @ResponseStatus(HttpStatus.OK)
-    public CustomerDTO getCustomerByUsername(@PathVariable String username) {
-
-        System.out.println("Authentication started for" + username);
-        return customerService.getCustomerByUsername(username);
-    }
 
     @PostMapping("/createAccount")
     public ResponseEntity<?> saveUser(@Valid @RequestBody CustomerWrapperDTO customerWrapperDTO) {
@@ -34,4 +27,21 @@ public class CustomerLoginController {
         }
         return new ResponseEntity<>(result,HttpStatus.OK);
     }
+
+    @GetMapping("/login")
+    public ResponseEntity<?> getCustomerByUsername(@Param("username") String username, @Param("password") String password) {
+
+        CustomerDTO customerDTO = customerService.loginCustomer(username,password);
+        if(customerDTO==null)
+            return ResponseEntity.badRequest().body("Invalid Login");
+        return new ResponseEntity<>(customerDTO,HttpStatus.OK);
+    }
+
+    @PostMapping("/createOrder")
+    public ResponseEntity<?> createOrder(@Valid @RequestBody OrderDTO orderDTO) {
+        boolean result = customerService.createOrder(orderDTO);
+        return new ResponseEntity<>(result,HttpStatus.OK);
+    }
+
+
 }

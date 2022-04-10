@@ -5,6 +5,7 @@ import com.example.demo.dto.*;
 import com.example.demo.service.MenuItemService;
 import com.example.demo.service.RestaurantService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,20 +24,15 @@ public class RestaurantController {
 
     @PostMapping("/addRestaurant")
     @ResponseStatus(HttpStatus.OK)
-    public RestaurantDTO saveUser(@RequestBody RestaurantDTO restaurantDTO) {
+    public RestaurantDTO addRestaurant(@RequestBody RestaurantDTO restaurantDTO) {
         return restaurantService.addRestaurant(restaurantDTO);
     }
 
     @PostMapping("/addFoods")
     @ResponseStatus(HttpStatus.OK)
-    public List<MenuItemDTO> addFood(@RequestBody List<MenuItemDTO> menuItemDTOS) {
+    public MenuItemDTO addFood(@RequestBody MenuItemDTO menuItemDTO) {
 
-        List<MenuItemDTO> menuItemDTOList = new ArrayList<>();
-
-        for(MenuItemDTO menuItemDTO: menuItemDTOS){
-            menuItemDTOList.add(menuItemService.addMenuItem(menuItemDTO));
-        }
-        return menuItemDTOList;
+        return menuItemService.addMenuItem(menuItemDTO);
     }
 
     @GetMapping("/viewMenuItems/{category}")
@@ -44,6 +40,28 @@ public class RestaurantController {
     public List<MenuItemDTO> getMenuItemsByCategory(@PathVariable String category){
 
         return menuItemService.findMenuItemsByCategory(category);
+
+    }
+
+    @GetMapping("/viewAllMenuItems")
+    @ResponseStatus(HttpStatus.OK)
+    public List<MenuItemDTO> getAllMenuItems(@Param("username") String username){
+
+        return menuItemService.getAllMenuItemsFromARestaurant(username);
+    }
+
+    @GetMapping("/viewRestaurantMenu")
+    @ResponseStatus(HttpStatus.OK)
+    public List<MenuItemDTO> getRestaurantMenu(@Param("name") String name){
+
+        return menuItemService.getMenu(name);
+    }
+
+    @GetMapping("/getAllRestaurants")
+    @ResponseStatus(HttpStatus.OK)
+    public List<RestaurantDTO> getAllRestaurants(){
+
+        return restaurantService.getAllRestaurants();
 
     }
 
