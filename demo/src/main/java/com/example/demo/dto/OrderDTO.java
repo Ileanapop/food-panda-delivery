@@ -28,5 +28,10 @@ public class OrderDTO {
     @NotEmpty(message = "Input foods list cannot be empty.")
     private List<String> foods;
 
+    private String specialDetails;
+
+    @NotEmpty(message = "Delivery Address cannot be empty.")
+    private String address;
+
 
 }

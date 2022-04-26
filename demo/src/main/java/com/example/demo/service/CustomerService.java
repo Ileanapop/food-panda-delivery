@@ -8,7 +8,9 @@ import com.example.demo.model.*;
 import com.example.demo.repository.*;
 import com.example.demo.utils.AdministratorMapper;
 import com.example.demo.utils.CustomerMapper;
+import com.example.demo.utils.MailSender;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -34,6 +36,9 @@ public class CustomerService {
 
     @Autowired
     private OrdersRepository ordersRepository;
+
+    @Autowired
+    private JavaMailSender javaMailSender;
 
     public CustomerService(){
 
@@ -82,17 +87,28 @@ public class CustomerService {
                 if(orderStatus.isPresent()){
                     Order order = new Order();
                     List<MenuItem> menuItems = new ArrayList<>();
-
+                    double totalPrice = 0;
                     for(String menuItemName: orderDTO.getFoods()){
                         Optional<MenuItem> orderedItem = menuItemRepository.findByItemNameAndRestaurant(menuItemName,restaurant.get());
                         orderedItem.ifPresent(menuItems::add);
-
+                        if(orderedItem.isPresent()){
+                            totalPrice+=orderedItem.get().getPrice();
+                        }
                     }
                     order.setOrderMenuItems(menuItems);
                     order.setCustomer(customer.get());
                     order.setOrderStatus(orderStatus.get());
                     order.setRestaurant(restaurant.get());
                     ordersRepository.save(order);
+
+                    MailContentService mailContentService = new MailContentService(menuItems,totalPrice,orderDTO.getSpecialDetails(),orderDTO.getAddress());
+                    String mailContent = mailContentService.generateReportMessage();
+
+                    Administrator administrator = restaurant.get().getAdministrator();
+                    MailSender mailSender = new MailSender("lunadog0607@gmail.com", customer.get().getEmail());
+
+                    mailSender.send(mailContent,javaMailSender);
+
                     return true;
                 }
                 return false;

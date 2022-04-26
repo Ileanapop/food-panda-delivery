@@ -6,13 +6,20 @@ import com.example.demo.repository.OrdersRepository;
 import com.example.demo.service.MenuItemService;
 import com.example.demo.service.OrdersService;
 import com.example.demo.service.RestaurantService;
+import com.example.demo.utils.MenuPDFExporter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -106,5 +113,14 @@ public class RestaurantController {
     public List<ViewOrderDTO> getCustomerOrders(@Param("email") String email){
 
         return ordersService.getCustomerOrders(email);
+    }
+
+    @GetMapping("/exportMenuToPdf")
+    public void exportMenuToPDF(@Param("username") String username, HttpServletResponse response) throws IOException {
+
+        response.setContentType("application/pdf");
+
+        MenuPDFExporter menuPDFExporter = new MenuPDFExporter(restaurantService.getListOfMenuItems(username));
+        menuPDFExporter.export(response);
     }
 }

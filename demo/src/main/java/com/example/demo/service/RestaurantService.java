@@ -4,10 +4,13 @@ package com.example.demo.service;
 import com.example.demo.dto.RestaurantDTO;
 import com.example.demo.model.Administrator;
 import com.example.demo.model.DeliveryZone;
+import com.example.demo.model.MenuItem;
 import com.example.demo.model.Restaurant;
 import com.example.demo.repository.AdministratorRepository;
 import com.example.demo.repository.DeliveryZoneRepository;
+import com.example.demo.repository.MenuItemRepository;
 import com.example.demo.repository.RestaurantRepository;
+import com.example.demo.utils.MenuPDFExporter;
 import com.example.demo.utils.RestaurantMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,6 +30,9 @@ public class RestaurantService {
 
     @Autowired
     private AdministratorRepository administratorRepository;
+
+    @Autowired
+    private MenuItemRepository menuItemRepository;
 
 
     public RestaurantService(){
@@ -69,6 +75,18 @@ public class RestaurantService {
             restaurantDTOS.add(restaurantMapper.convertToDTO(restaurant));
 
         return restaurantDTOS;
+    }
+
+    public List<MenuItem> getListOfMenuItems(String username){
+        Optional<Administrator> administrator = administratorRepository.findByUsername(username);
+        if(administrator.isPresent()){
+            Optional<Restaurant> restaurant = restaurantRepository.getRestaurantByAdministratorId(administrator.get().getId());
+            if(restaurant.isPresent()){
+                return menuItemRepository.findByRestaurant(restaurant.get());
+            }
+            return new ArrayList<>();
+        }
+        return new ArrayList<>();
     }
 
 }
