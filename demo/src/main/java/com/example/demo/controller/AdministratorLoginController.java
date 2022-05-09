@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpClientErrorException;
 
 import javax.validation.Valid;
+import java.util.logging.Logger;
 
 @RestController
 @RequestMapping("api/administrator")
@@ -32,9 +33,12 @@ public class AdministratorLoginController {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    private final static Logger LOGGER = Logger.getLogger(AdministratorLoginController.class.getName());
+
     @GetMapping("/login")
     public ResponseEntity<?> getCustomerByUsername(@Param("username") String username, @Param("password") String password){
 
+        LOGGER.info("Authentication started");
         try {
             UsernamePasswordAuthenticationToken authInputToken =
                     new UsernamePasswordAuthenticationToken(username, password);
@@ -46,8 +50,10 @@ public class AdministratorLoginController {
 
             String token = jwtUtil.generateToken(username+"-admin");
             System.out.println(authInputToken);
+            LOGGER.info("Authentication finished successfully");
             return new ResponseEntity<>(token,HttpStatus.OK);
         }catch (AuthenticationException authExc){
+            LOGGER.warning("Exception occurred during authentication");
             return ResponseEntity.badRequest().body("Invalid Login Credentials");
         }
 

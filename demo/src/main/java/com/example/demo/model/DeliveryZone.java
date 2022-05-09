@@ -9,6 +9,7 @@ import java.util.List;
 @Getter
 @Setter
 
+
 @Entity
 @Table(name = "delivery_zone")
 public class DeliveryZone {

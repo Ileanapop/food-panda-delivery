@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 @RestController
 @RequestMapping("/foodCategories")
@@ -21,10 +22,13 @@ public class FoodCategoryController {
     @Autowired
     private FoodCategoryService foodCategoryService;
 
+    private final static Logger LOGGER = Logger.getLogger(FoodCategoryController.class.getName());
+
     @GetMapping("/getAllCategories")
     @ResponseStatus(HttpStatus.OK)
     public List<String> getDeliveryZones() {
 
+        LOGGER.info("Start request to get all food categories");
        return foodCategoryService.getAllCategories();
 
     }

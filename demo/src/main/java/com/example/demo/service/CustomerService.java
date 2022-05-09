@@ -18,6 +18,8 @@ import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.logging.Logger;
+
 
 @Service
 public class CustomerService {
@@ -40,11 +42,20 @@ public class CustomerService {
     @Autowired
     private JavaMailSender javaMailSender;
 
+    private final static Logger LOGGER = Logger.getLogger(CustomerService.class.getName());
+
     public CustomerService(){
 
     }
 
+    /**
+     * Method for authenticating the customer
+     * @param username of the customer who want to log in
+     * @param password of the customer
+     * @return the customer data
+     */
     public CustomerDTO loginCustomer(String username, String password){
+        LOGGER.info("Verifying credentials");
         Optional<Customer> customer = customerRepository.findFirstByUsername(username);
         if(!customer.isPresent()){
             return null;
@@ -57,15 +68,23 @@ public class CustomerService {
         return null;
     }
 
+    /**
+     * Method for registering a new customer
+     * @param customerWrapperDTO customer data needed to create the new customer
+     * @return the created customer
+     */
     @Transactional
     public CustomerDTO addCustomer(CustomerWrapperDTO customerWrapperDTO){
+
         CustomerMapper customerMapper = new CustomerMapper();
         Customer newCustomer = customerMapper.convertFromDTO(customerWrapperDTO);
 
+        LOGGER.info("Verifying duplicated username");
         Optional<Customer> existingCustomer = customerRepository.findFirstByUsername(newCustomer.getUsername());
         if(existingCustomer.isPresent())
             return null;
 
+        LOGGER.info("Verifying duplicated email");
         Optional<Customer> existingCustomerWithEmailAddress = customerRepository.findFirstByEmail(newCustomer.getEmail());
         if(existingCustomerWithEmailAddress.isPresent()){
             return null;
@@ -77,6 +96,7 @@ public class CustomerService {
 
     public boolean createOrder(OrderDTO orderDTO){
 
+        LOGGER.info("Identifying restaurant");
         Optional<Restaurant> restaurant = restaurantRepository.getRestaurantByName(orderDTO.getRestaurant());
         System.out.println(orderDTO.getRestaurant());
         System.out.println(orderDTO.getCustomer());
@@ -101,9 +121,11 @@ public class CustomerService {
                     order.setRestaurant(restaurant.get());
                     ordersRepository.save(order);
 
+                    LOGGER.info("Generate mail body");
                     MailContentService mailContentService = new MailContentService(menuItems,totalPrice,orderDTO.getSpecialDetails(),orderDTO.getAddress());
                     String mailContent = mailContentService.generateReportMessage();
 
+                    LOGGER.info("Sending mail");
                     Administrator administrator = restaurant.get().getAdministrator();
                     MailSender mailSender = new MailSender("lunadog0607@gmail.com", customer.get().getEmail());
 

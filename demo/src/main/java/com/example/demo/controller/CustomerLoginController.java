@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 @RestController
 @RequestMapping("/customer")
@@ -29,18 +30,24 @@ public class CustomerLoginController {
     @Autowired
     private AuthenticationManager authManager;
 
+    private final static Logger LOGGER = Logger.getLogger(CustomerLoginController.class.getName());
+
     @PostMapping("/createAccount")
     public ResponseEntity<?> saveUser(@Valid @RequestBody CustomerWrapperDTO customerWrapperDTO) {
+        LOGGER.info("Register operation started");
         CustomerDTO result = customerService.addCustomer(customerWrapperDTO);
         if(result == null){
+            LOGGER.warning("Register cannot be performed");
             return ResponseEntity.badRequest().body("Insert new customer cannot be performed");
         }
+        LOGGER.warning("Register finished successfully");
         return new ResponseEntity<>(result,HttpStatus.OK);
     }
 
     @GetMapping("/login")
     public ResponseEntity<?> getCustomerByUsername(@Param("username") String username, @Param("password") String password) {
 
+        LOGGER.info("Customer Authentication started");
         try {
             UsernamePasswordAuthenticationToken authInputToken =
                     new UsernamePasswordAuthenticationToken(username, password);

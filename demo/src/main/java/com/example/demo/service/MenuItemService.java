@@ -18,6 +18,7 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.logging.Logger;
 
 @Service
 public class MenuItemService {
@@ -34,15 +35,24 @@ public class MenuItemService {
     @Autowired
     private AdministratorRepository administratorRepository;
 
+    private final static Logger LOGGER = Logger.getLogger(MenuItemService.class.getName());
+
     public MenuItemService(){
 
     }
 
+
+    /**
+     * Method to add the a new menu item
+     * @param menuItemDTO data containing properties of the new item
+     * @return the created menu item
+     */
     public MenuItemDTO addMenuItem(MenuItemDTO menuItemDTO){
 
         MenuItemMapper menuItemMapper = new MenuItemMapper();
         MenuItem newMenuItem = menuItemMapper.convertFromDTO(menuItemDTO);
 
+        LOGGER.info("Verifying category of menu item");
         Optional<FoodCategory> foodCategory = foodCategoryRepository.findByName(menuItemDTO.getCategory());
         if(foodCategory.isPresent()){
             newMenuItem.setCategory(foodCategory.get());
@@ -50,6 +60,7 @@ public class MenuItemService {
         else
             return null;
 
+        LOGGER.info("Getting the restaurant");
         Optional<Administrator> administrator = administratorRepository.findByUsername(menuItemDTO.getAdministrator());
 
         if(administrator.isPresent()){
@@ -64,18 +75,29 @@ public class MenuItemService {
         return menuItemMapper.convertToDTO(menuItemRepository.save(newMenuItem));
     }
 
+    /**
+     * Method to search the menu items by category
+     * @param category of the menu items
+     * @return list of the menu items of category
+     */
     public List<MenuItemDTO> findMenuItemsByCategory(String category){
         List<MenuItemDTO> menuItemDTOList = new ArrayList<>();
         List<MenuItem> menuItems = menuItemRepository.findMenuItemsByCategory(category);
 
         MenuItemMapper menuItemMapper = new MenuItemMapper();
 
+        LOGGER.info("Mapping menu items");
         for(MenuItem menuItem: menuItems){
             menuItemDTOList.add(menuItemMapper.convertToDTO(menuItem));
         }
         return menuItemDTOList;
     }
 
+    /**
+     * Method to get all menu items of a restaurant
+     * @param administratorUsername username of the admin of the restaurant
+     * @return list of menu items of the restaurant
+     */
     public List<MenuItemDTO> getAllMenuItemsFromARestaurant(String administratorUsername){
         Optional<Administrator> administrator = administratorRepository.findByUsername(administratorUsername);
         if(administrator.isPresent()){
@@ -99,8 +121,14 @@ public class MenuItemService {
         return null;
     }
 
+    /**
+     * Method to get the menu of a restaurant
+     * @param name of the restaurant
+     * @return list of menu items
+     */
     public List<MenuItemDTO> getMenu(String name){
 
+        LOGGER.info("Identify the restaurant");
             Optional<Restaurant> restaurant = restaurantRepository.getRestaurantByName(name);
             if(restaurant.isPresent()){
                 List<MenuItem> menuItems = menuItemRepository.findByRestaurant(restaurant.get());
@@ -116,7 +144,7 @@ public class MenuItemService {
 
                 return menuItemDTOList;
             }
-
+        LOGGER.warning("The restaurant does not exist");
         return null;
     }
 }

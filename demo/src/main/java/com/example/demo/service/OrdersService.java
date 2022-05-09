@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.logging.Logger;
 
 @Service
 public class OrdersService {
@@ -30,16 +31,26 @@ public class OrdersService {
     @Autowired
     private CustomerRepository customerRepository;
 
+    private final static Logger LOGGER = Logger.getLogger(OrdersService.class.getName());
+
 
     public OrdersService(){
 
     }
 
+
+    /**
+     * Method to get the orders of the restaurant
+     * @param username of the administrator
+     * @return the list of all restaurant orders
+     */
     public List<ViewOrderDTO> getRestaurantOrders(String username){
 
         Optional<Administrator> administrator = administratorRepository.findByUsername(username);
 
+
         if(administrator.isPresent()){
+            LOGGER.info("Administrator identified");
             System.out.println(administrator.get().getUsername());
             Optional<Restaurant> restaurant = restaurantRepository.getRestaurantByAdministratorId(administrator.get().getId());
             if(restaurant.isPresent()){
@@ -62,6 +73,11 @@ public class OrdersService {
         return null;
     }
 
+    /**
+     * Method to accept order
+     * @param acceptedOrdersDTO data consisting list of orders to be accepted by admin
+     * @return true if order status changed to accepted
+     */
     public boolean acceptOrders(AcceptedOrdersDTO acceptedOrdersDTO){
         for(Integer orderId: acceptedOrdersDTO.getOrdersIds()){
             Order order = ordersRepository.getById(orderId);
@@ -71,9 +87,16 @@ public class OrdersService {
                 ordersRepository.save(order);
             }
         }
+        LOGGER.info("Order accepted");
         return true;
     }
 
+
+    /**
+     * Method to get restaurant pending orders
+     * @param username of the admin of the restaurant
+     * @return list of pending orders
+     */
     public List<ViewOrderDTO> getRestaurantPendingOrders(String username){
 
         Optional<Administrator> administrator = administratorRepository.findByUsername(username);
@@ -105,6 +128,13 @@ public class OrdersService {
         return null;
     }
 
+
+    /**
+     * Method to filter the orders by status
+     * @param status order status
+     * @param username of the admin of the restaurant
+     * @return list of filtered orders
+     */
     public List<ViewOrderDTO> filterOrdersByStatus(String status, String username){
         Optional<Administrator> administrator = administratorRepository.findByUsername(username);
         System.out.println("Start fileeeeeeeeeeeeeeeeeeeeeee");
@@ -135,11 +165,18 @@ public class OrdersService {
         return null;
     }
 
+
+    /**
+     * Method to get customer orders
+     * @param email of the customer
+     * @return list of orders of the customer
+     */
     public List<ViewOrderDTO> getCustomerOrders(String email){
 
         Optional<Customer> customer = customerRepository.findFirstByEmail(email);
 
         if(customer.isPresent()){
+            LOGGER.info("Customer identified");
             List<Order> orders = ordersRepository.findOrderByCustomer_IdCustomer(customer.get().getIdCustomer());
 
             List<ViewOrderDTO> viewOrderDTOS = new ArrayList<>();
